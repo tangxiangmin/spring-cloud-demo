@@ -11,3 +11,5 @@ spring:
 mybatis:
   mapper-locations: classpath:dao/*.xml  #配置映射文件
   type-aliases-package: com.example.test.bean #配置实体类
+  configuration:
+    map-underscore-to-camel-case: true # 下划线转驼峰
