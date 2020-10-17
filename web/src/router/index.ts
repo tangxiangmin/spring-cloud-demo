@@ -19,6 +19,29 @@ const routes: Array<RouteRecordRaw> = [
     path: '/message_board',
     name: 'messageBoard',
     component: () => import(/* webpackChunkName: "about" */ '../views/messageBoard.vue')
+  },
+  // 游戏
+  {
+    path: '/game',
+    name: 'game',
+    component: () => import(/* webpackChunkName: "about" */ '../views/game/index.vue'),
+    children: [
+      {
+        path: 'shop',
+        name: 'gameShop',
+        component: () => import(/* webpackChunkName: "about" */ '../views/game/shop.vue')
+      },
+      {
+        path: 'tavern',
+        name: 'gameTavern',
+        component: () => import(/* webpackChunkName: "about" */ '../views/game/tavern.vue')
+      },
+      {
+        path: 'adventure',
+        name: 'gameAdventure',
+        component: () => import(/* webpackChunkName: "about" */ '../views/game/adventure.vue')
+      }
+    ]
   }
 ]
 

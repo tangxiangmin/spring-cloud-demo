@@ -11,3 +11,7 @@ export function submitMessage (data: any) {
 export function removeMessage (id: number) {
   return request.delete(`/message_board/v1/${id}`)
 }
+
+export function replyMessage (id: number, data: any) {
+  return request.post(`/message_board/v1/${id}/reply`, data)
+}

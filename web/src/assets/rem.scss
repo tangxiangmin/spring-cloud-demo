@@ -1,0 +1,24 @@
+$design-width: 750;
+
+@function rem($px) {
+  @if (unitless($px)) {
+    @return 1rem * ($px/100);
+  } @else {
+    @return 1rem * ($px/100px);
+  }
+}
+
+html {
+  font-size: calc((100vw / #{$design-width}) * 100);
+}
+
+
+@media screen and (min-width: 800px) {
+  html {
+    font-size: 106.667PX;
+  }
+  #app, ._full {
+    width: 800PX !important;
+    margin: 0 auto;
+  }
+}
