@@ -28,6 +28,11 @@ import Scene from '@/views/game/core/scene'
 import Hero from '@/views/game/core/hero'
 import Attack from '@/views/game/core/attack'
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// @ts-ignore
+import messageBox from '@/util/popup/messageBox'
+import heroListDialog from '@/views/game/components/heroListDialog.vue'
+
 export default {
   name: 'adventure',
   setup () {
@@ -36,11 +41,20 @@ export default {
     ])
 
     const chooseSceneHero = (scene: Scene) => {
-      const hero = new Hero({ name: '小明', lv: 1 })
-      hero.on('underAttack', (attack: Attack) => {
-        console.log(`${hero.name}underAttack`, attack.damage, '剩余hp', hero.hp)
+      messageBox.show({
+        content: (h: Function) => {
+          return h(heroListDialog, {
+            onChoose: (hero: Hero) => {
+              console.log('choose')
+              hero.on('underAttack', (attack: Attack) => {
+                console.log(`${hero.name}underAttack`, attack.damage, '剩余hp', hero.hp)
+              })
+              scene.setHero(hero)
+              messageBox.hide()
+            }
+          })
+        }
       })
-      scene.setHero(hero)
     }
 
     const startScene = (scene: Scene) => {

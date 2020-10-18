@@ -4,6 +4,7 @@
  */
 
 import { createApp, h } from 'vue'
+import store from '@/store'
 
 const index = 0
 const popupManager = {
@@ -25,7 +26,7 @@ const popupManager = {
           node = this.$refs.node
           resolve(node)
         }
-      })
+      }).use(store)
       const el = document.createElement('div')
       el.id = 'popop-' + index
       document.body.appendChild(el)

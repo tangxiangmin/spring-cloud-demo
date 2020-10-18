@@ -5,14 +5,18 @@ class Hero extends CombatUnit {
   lv: number;
   mp: number;
   name: string;
+  exp: number;
   equipMap: Map<EquipPart, Equip>;
 
   constructor (opts: any) {
-    super(1000)
-    const { lv, mp, name } = opts
+    const { lv, mp, name, exp, hp } = opts
+    super(hp)
+
     this.lv = lv
     this.mp = mp
     this.name = name
+    this.exp = exp
+
     this.equipMap = new Map()
   }
 
@@ -48,10 +52,28 @@ class Hero extends CombatUnit {
     return this.findEquipByPart(EquipPart.shoes)
   }
 
+  // 计算所有装备的数据加持
+  calcEquipAttr (equip: Equip, isTakeOff = false) {
+    const attrs = equip.attrs
+    let hp = attrs.get('hp') || 0
+    if (isTakeOff) {
+      hp = -hp
+    }
+    this.hp += hp
+  }
+
   // 穿戴装备
   wearEquip (equip: Equip) {
     const part = equip.part
     this.equipMap.set(part, equip)
+    this.calcEquipAttr(equip)
+  }
+
+  // 脱下装备
+  getOffEquip (equip: Equip) {
+    const part = equip.part
+    this.equipMap.delete(part)
+    this.calcEquipAttr(equip, true)
   }
 
   // 找到某个部位的装填

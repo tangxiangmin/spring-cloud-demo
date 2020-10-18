@@ -14,13 +14,17 @@ function createEquip () {
     lv: 30,
     part,
     type,
-    name: '隔热手套'
+    name: '隔热手套',
+    attrs: {
+      hp: 50,
+      mp: 10
+    }
   })
 }
 
 export function fetchHeroList () {
   return Promise.resolve([
-    new Hero({ name: '克里斯' })
+    new Hero({ name: '克里斯', lv: 1, mp: 30, exp: 113, hp: 100 })
     // { id: 1, name: '小强', hp: 5730, mp: 2131, energy: 132, exp: '1900 / 4200' },
     // { id: 2, name: '小红' },
     // { id: 3, name: '小明' }

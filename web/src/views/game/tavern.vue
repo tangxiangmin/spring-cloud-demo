@@ -3,13 +3,11 @@
     <div class="panel" v-if="currentHero">
       <div class="profile">
         <div class="profile_hd">
-          <div class="profile_name">{{currentHero.name}}</div>
-          <div class="profile_lv">{{currentHero.lv}}</div>
+          <div class="profile_name">{{currentHero.name}} lv.{{currentHero.lv}}</div>
         </div>
         <div class="profile_bd">
           生命:{{currentHero.hp}} <br>
           法力:{{currentHero.mp}} <br>
-          体力:{{currentHero.energy}} <br>
           经验:{{currentHero.exp}}
         </div>
       </div>
@@ -46,29 +44,24 @@
 <script lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import equipCell from './components/equipCell'
-import { fetchEquipList, fetchHeroList } from '@/api/game'
 import { showCompareEquipDialog, hideDialog } from '@/views/game/util'
 import Hero from '@/views/game/core/hero'
+import { useStore } from 'vuex'
 
 export default {
   name: 'tavern',
   components: { equipCell },
   setup () {
+    const store = useStore()
     const currentHeroIndex = ref(0)
 
-    const equipList = ref([])
-    const heroList = ref([])
+    const heroList = computed(() => {
+      return store.state.game.heroList
+    })
 
-    const getEquipList = () => {
-      fetchEquipList().then((data) => {
-        equipList.value = data
-      })
-    }
-    const getHeroList = () => {
-      fetchHeroList().then(data => {
-        heroList.value = data
-      })
-    }
+    const equipList = computed(() => {
+      return store.state.game.equipList
+    })
 
     const currentHero = computed(() => {
       return heroList.value[currentHeroIndex.value]
@@ -91,11 +84,9 @@ export default {
     }
 
     onMounted(() => {
-      // webStorm暂时不支持vue3中vuex的store跳转
-      // store.dispatch('game/fetchUserList')
+      // 统一放在进入页面时处理
+      // store.dispatch('game/fetchHeroList')
       // store.dispatch('game/fetchEquipList')
-      getEquipList()
-      getHeroList()
     })
 
     return {

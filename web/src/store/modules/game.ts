@@ -1,19 +1,19 @@
 import { fetchEquipList, fetchHeroList } from '@/api/game'
 
 interface State {
-  userList: Array<any>;
+  heroList: Array<any>;
   equipList: Array<any>;
 }
 
 export default {
   namespaced: true,
   state: {
-    userList: [],
+    heroList: [],
     equipList: []
   },
   mutations: {
-    setUserList (state: State, payload: Array<any>) {
-      state.userList = payload
+    setHeroList (state: State, payload: Array<any>) {
+      state.heroList = payload
     },
     setEquipList (state: State, payload: any) {
       state.equipList = payload
@@ -21,9 +21,9 @@ export default {
 
   },
   actions: {
-    async fetchUserList ({ commit }: any) {
+    async fetchHeroList ({ commit }: any) {
       const list = await fetchHeroList()
-      commit('setUserList', list)
+      commit('setHeroList', list)
     },
     async fetchEquipList ({ commit }: any) {
       const list = await fetchEquipList()

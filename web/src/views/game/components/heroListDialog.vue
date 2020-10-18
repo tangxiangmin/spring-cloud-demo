@@ -1,13 +1,67 @@
 <template>
-<div></div>
+<div class="box">
+  <div class="hero" v-for="(hero, index) in heroList" :key="index">
+    <div class="hero_icon"></div>
+    <div class="hero_mn">
+      {{hero.name}}  lv.{{hero.lv}}<br>
+      hp:{{hero.hp}} mp:{{hero.mp}} <br>
+      exp:{{hero.exp}}
+
+    </div>
+    <div class="hero_action">
+      <button @click="choose(hero)">选择</button>
+    </div>
+
+  </div>
+</div>
 </template>
 
-<script>
+<script lang="ts">
+import { useStore } from 'vuex'
+import { computed } from 'vue'
 export default {
-  name: 'heroListDialog'
+  name: 'heroListDialog',
+  setup (_, { emit }) {
+    const store = useStore()
+    const heroList = computed(() => {
+      return store.state.game.heroList
+    })
+    const choose = (hero) => {
+      emit('choose', hero)
+    }
+
+    return {
+      heroList,
+      choose
+    }
+  }
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
+.box {
+  background-color: #fff;
+  padding: rem(10);
+  width: rem(600);
+}
+.hero {
+  display: flex;
+  font-size: rem(24);
+  align-items: center;
+  &_icon {
+    $s: rem(100);
+    width: $s;
+    height: $s;
+    background-color: #ccc;
+    margin-right: rem(20);
+  }
+  &_mn{
+    height: 100%;
+    flex: 1;
+  }
+  &_action {
+
+  }
+}
 </style>

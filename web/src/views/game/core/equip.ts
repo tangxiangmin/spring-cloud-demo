@@ -17,16 +17,16 @@ enum EquipType {
   LEGEND
 }
 
-enum EquipAttr {
-  hp, // 生命值
-  mp, // 法力值
-  damage, // 攻击
-  defense, // 防御
-  critical, // 暴击
-  hpRegen, // 生命回复
-  mpRegen, // 法力回复
-  skill// 附带技能
-}
+// enum EquipAttr {
+//   hp='hp', // 生命值
+//   mp = 'mp', // 法力值
+//   damage = 'damage', // 攻击
+//   defense = 'defense', // 防御
+//   critical = 'critical', // 暴击
+//   hpRegen = 'hpRegen', // 生命回复
+//   mpRegen = 'mpRegen', // 法力回复
+//   skill = 'skill'// 附带技能
+// }
 
 const equipPart: Record<string, string> = {
   1: '头部',
@@ -51,7 +51,7 @@ class Equip {
   lv: number;
   part: EquipPart;
   type: EquipType;
-  attr: Map<EquipAttr, any>;
+  attrs: Map<string, any>;
 
   constructor (opts: any) {
     const { part, name, type, lv, attrs } = opts
@@ -59,8 +59,9 @@ class Equip {
     this.name = name
     this.part = part
     this.type = type
-    // this.attr = new Map()
-    this.attr = this.initAttr(attrs)
+    this.attrs = new Map()
+
+    this.initAttr(attrs)
   }
 
   get partName () {
@@ -73,11 +74,10 @@ class Equip {
 
   // todo 设置装备的属性
   initAttr (attrs: any) {
-    const map = new Map()
+    if (!attrs) return
     Object.keys(attrs).forEach(key => {
-      map.set(key, attrs[key])
+      this.attrs.set(key, attrs[key])
     })
-    return map
   }
 }
 

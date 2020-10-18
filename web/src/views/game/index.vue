@@ -11,14 +11,22 @@
 
 <script>
 import { ref } from 'vue'
+import { useStore } from 'vuex'
+
 export default {
   name: 'index',
   setup () {
+    const store = useStore()
     const navList = ref([
       { name: '酒馆', path: '/game/tavern' },
       { name: '冒险', path: '/game/adventure' },
       { name: '商店', path: '/game/shop' }
     ])
+
+    // webStorm暂时不支持vue3中vuex的store跳转
+    store.dispatch('game/fetchHeroList')
+    store.dispatch('game/fetchEquipList')
+
     return {
       navList
     }
