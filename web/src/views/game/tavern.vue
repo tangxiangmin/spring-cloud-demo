@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <div class="panel">
+    <div class="panel" v-if="currentHero">
       <div class="profile">
         <div class="profile_hd">
           <div class="profile_name">{{currentHero.name}}</div>
@@ -15,22 +15,22 @@
       </div>
       <div class="person">
         <div class="person_head">
-          <equipCell :equip="equipList[0]"></equipCell>
+          <equipCell :equip="currentHero.hat"></equipCell>
         </div>
         <div class="person_row">
-          <equipCell :equip="equipList[0]"></equipCell>
-          <equipCell :equip="equipList[0]"></equipCell>
+          <equipCell :equip="currentHero.necklace"></equipCell>
+          <equipCell :equip="currentHero.ring"></equipCell>
         </div>
         <div class="person_row">
-          <equipCell :equip="equipList[0]"></equipCell>
-          <equipCell :equip="equipList[0]"></equipCell>
+          <equipCell :equip="currentHero.glove"></equipCell>
+          <equipCell :equip="currentHero.cloth"></equipCell>
         </div>
         <div class="person_row">
-          <equipCell :equip="equipList[0]"></equipCell>
-          <equipCell :equip="equipList[0]"></equipCell>
+          <equipCell :equip="currentHero.mainHand"></equipCell>
+          <equipCell :equip="currentHero.subHand"></equipCell>
         </div>
         <div class="person_foot">
-          <equipCell :equip="equipList[0]"></equipCell>
+          <equipCell :equip="currentHero.shoes"></equipCell>
         </div>
       </div>
     </div>
@@ -38,62 +38,38 @@
       <div class="hero-icon" :class="{'hero-icon-on': hero === currentHero}" @click="chooseHero(index)" v-for="(hero,index) in heroList" :key="index">{{hero.name}}</div>
     </div>
     <div class="equip-list">
-      <equipCell v-for="equip in equipList" class="equip" :key="equip" :equip="equip"></equipCell>
+      <equipCell v-for="equip in equipList" :click="true" @click="compareEquip(equip)" class="equip" :key="equip" :equip="equip"></equipCell>
     </div>
   </div>
 </template>
 
-<script>
-import { ref, computed } from 'vue'
+<script lang="ts">
+import { ref, computed, onMounted } from 'vue'
 import equipCell from './components/equipCell'
+import { fetchEquipList, fetchHeroList } from '@/api/game'
+import { showCompareEquipDialog, hideDialog } from '@/views/game/util'
+import Hero from '@/views/game/core/hero'
 
-const equipPos = {
-  1: '头部',
-  2: '项链',
-  3: '戒指',
-  4: '手套',
-  5: '衣服',
-  6: '主手',
-  7: '副手',
-  8: '脚部'
-}
-const equipType = {
-  1: '普通',
-  2: '优秀',
-  3: '卓越',
-  4: '史诗',
-  5: '传奇'
-}
-
-const random = (start, end) => {
-  return Math.floor(Math.random() * end + start)
-}
 export default {
   name: 'tavern',
   components: { equipCell },
   setup () {
     const currentHeroIndex = ref(0)
-    const heroList = ref([
-      { id: 1, name: '小强', hp: 5730, mp: 2131, energy: 132, exp: '1900 / 4200' },
-      { id: 2, name: '小红' },
-      { id: 3, name: '小明' }
-    ])
 
     const equipList = ref([])
+    const heroList = ref([])
 
-    for (let i = 0; i < 18; ++i) {
-      const pos = random(1, 8)
-      const type = random(1, 5)
-
-      equipList.value.push({
-        lv: 30,
-        pos,
-        type,
-        posName: equipPos[pos],
-        typeName: equipType[type]
-        // id: i
+    const getEquipList = () => {
+      fetchEquipList().then((data) => {
+        equipList.value = data
       })
     }
+    const getHeroList = () => {
+      fetchHeroList().then(data => {
+        heroList.value = data
+      })
+    }
+
     const currentHero = computed(() => {
       return heroList.value[currentHeroIndex.value]
     })
@@ -102,11 +78,32 @@ export default {
       currentHeroIndex.value = index
     }
 
+    const compareEquip = (equip) => {
+      // todo 找到当前英雄该部位已穿戴的装备
+      const hero: Hero = currentHero.value as Hero
+      const currentEquip = hero.findEquipByPart(equip.part)
+      showCompareEquipDialog(currentEquip, equip, {
+        wear () {
+          hero.wearEquip(equip)
+          hideDialog()
+        }
+      })
+    }
+
+    onMounted(() => {
+      // webStorm暂时不支持vue3中vuex的store跳转
+      // store.dispatch('game/fetchUserList')
+      // store.dispatch('game/fetchEquipList')
+      getEquipList()
+      getHeroList()
+    })
+
     return {
       heroList,
       equipList,
       currentHero,
-      chooseHero
+      chooseHero,
+      compareEquip
     }
   }
 }

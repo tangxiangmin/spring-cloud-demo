@@ -1,5 +1,5 @@
 import Attack from '@/views/game/core/attack'
-import Emitter from './Emitter'
+import Emitter from './emitter'
 
 class CombatUnit extends Emitter {
   hp: number;

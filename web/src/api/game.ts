@@ -1,44 +1,30 @@
 import request from '@/util/request'
-
-const equipPos: Record<string, string> = {
-  1: '头部',
-  2: '项链',
-  3: '戒指',
-  4: '手套',
-  5: '衣服',
-  6: '主手',
-  7: '副手',
-  8: '脚部'
-}
-const equipType: Record<string, string> = {
-  1: '普通',
-  2: '优秀',
-  3: '卓越',
-  4: '史诗',
-  5: '传奇'
-}
+import Hero from '@/views/game/core/hero'
+import Equip from '@/views/game/core/equip'
 
 const random = (start: number, end: number) => {
   return Math.floor(Math.random() * end + start)
 }
 
 function createEquip () {
-  const pos = random(1, 8)
+  const part = random(1, 8)
   const type = random(1, 5)
 
-  return {
+  return new Equip({
     lv: 30,
-    pos,
+    part,
     type,
-    name: '隔热手套',
-    posName: equipPos[pos],
-    typeName: equipType[type]
-    // id: i
-  }
+    name: '隔热手套'
+  })
 }
 
 export function fetchHeroList () {
-  return Promise.resolve([])
+  return Promise.resolve([
+    new Hero({ name: '克里斯' })
+    // { id: 1, name: '小强', hp: 5730, mp: 2131, energy: 132, exp: '1900 / 4200' },
+    // { id: 2, name: '小红' },
+    // { id: 3, name: '小明' }
+  ])
 }
 
 export function fetchEquipList () {

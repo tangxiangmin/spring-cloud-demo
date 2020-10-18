@@ -35,15 +35,15 @@ export default {
       new Scene(7, '碎石旷野', 'lv30 ~ lv34')
     ])
 
-    const chooseSceneHero = (scene) => {
-      const hero = new Hero()
+    const chooseSceneHero = (scene: Scene) => {
+      const hero = new Hero({ name: '小明', lv: 1 })
       hero.on('underAttack', (attack: Attack) => {
         console.log(`${hero.name}underAttack`, attack.damage, '剩余hp', hero.hp)
       })
       scene.setHero(hero)
     }
 
-    const startScene = (scene) => {
+    const startScene = (scene: Scene) => {
       scene.run()
     }
 

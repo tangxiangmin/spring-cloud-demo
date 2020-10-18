@@ -1,19 +1,39 @@
 <template>
-  <div class="equip" :class="['equip-type-'+equip.type]">
-    <div class="equip_ct">{{ equip.typeName }} <br> {{equip.posName}}</div>
-    <div class="equip_lv">
-      lv.{{ equip.lv }}
-    </div>
+  <div class="equip" :class="['equip-type-'+equip?.type]" @click="clickCell">
+    <template v-if="equip">
+      <div class="equip_ct">{{ equip.typeName }} <br> {{equip.partName}}</div>
+      <div class="equip_lv">
+        lv.{{ equip.lv }}
+      </div>
+    </template>
   </div>
 </template>
 
 <script>
+import { showEquipDialog } from '@/views/game/util'
+
 export default {
   name: 'equip-cell',
   props: {
     equip: {
       type: Object,
       default: null
+    },
+    click: {
+      type: Boolean,
+      default: false
+    }
+  },
+  setup (props, { emit }) {
+    const clickCell = () => {
+      if (props.click) {
+        emit('click')
+      } else if (props.equip) {
+        showEquipDialog(props.equip)
+      }
+    }
+    return {
+      clickCell
     }
   }
 }
