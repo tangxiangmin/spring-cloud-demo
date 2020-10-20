@@ -2,6 +2,7 @@ import Monster from '@/views/game/core/monster'
 import Hero from '@/views/game/core/hero'
 import CombatUnit from '@/views/game/core/combatUnit'
 import Attack from '@/views/game/core/attack'
+import Emitter from '@/views/game/core/emitter'
 
 // 关卡
 class Step {
@@ -16,7 +17,7 @@ class Step {
   }
 }
 
-class Scene {
+class Scene extends Emitter {
   index: number;
   name: string;
   lvDesc: string;
@@ -34,6 +35,7 @@ class Scene {
   stepList: Array<Step>;
 
   constructor (index: number, name: string, lvDesc: string) {
+    super()
     this.index = index
     this.name = name
     this.lvDesc = lvDesc
@@ -111,10 +113,9 @@ class Scene {
   }
 
   gameOver () {
-    console.log('英雄死亡，游戏结束，获得奖励')
     const { gainGold, gainExp } = this
-    console.log({ gainGold, gainExp })
     this.isRunning = false
+    this.emit('gameOver', { gainGold, gainExp })
   }
 
   run () {

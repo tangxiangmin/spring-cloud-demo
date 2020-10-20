@@ -1,6 +1,11 @@
 <template>
 
   <div class="page">
+    <div class="header">
+      <span class="mr-base">金币💰：{{accountInfo.gold}}</span>
+      <span>钻石💎：{{accountInfo.jewel}}</span>
+
+    </div>
     <router-view/>
     <div class="footer">
       <router-link class="nav-item" v-for="nav in navList" :key="nav.path" :to="nav.path">{{nav.name}}</router-link>
@@ -10,7 +15,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 
 export default {
@@ -24,11 +29,17 @@ export default {
     ])
 
     // webStorm暂时不支持vue3中vuex的store跳转
+    store.dispatch('game/fetchAccountInfo')
     store.dispatch('game/fetchHeroList')
     store.dispatch('game/fetchEquipList')
 
+    const accountInfo = computed(() => {
+      return store.state.game.accountInfo
+    })
+
     return {
-      navList
+      navList,
+      accountInfo
     }
   }
 }
@@ -37,6 +48,11 @@ export default {
 <style scoped lang="scss">
 .page {
   min-height: 100vh;
+}
+.header {
+  padding: rem(30);
+  font-size: rem(24);
+  border-bottom: 1px solid #000;
 }
 .footer {
   border-top: 1px solid #000;
@@ -59,4 +75,7 @@ export default {
   text-decoration: none;
 }
 
+.mr-base {
+  margin-right: rem(50);
+}
 </style>

@@ -2,7 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.test.dao.MessageDao">
     <select id="getList" resultType="com.example.test.bean.MessageBean">
-          SELECT * FROM message_board
+          SELECT * FROM message_board WHERE pid = 0;
+    </select>
+    <select id="getReplyList" resultType="com.example.test.bean.MessageBean">
+          SELECT * FROM message_board WHERE pid = #{pid};
     </select>
     <insert id="insertOne">
         insert into message_board(

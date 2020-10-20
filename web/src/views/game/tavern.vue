@@ -43,10 +43,12 @@
 
 <script lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import equipCell from './components/equipCell'
+import { useStore } from 'vuex'
+
 import { showCompareEquipDialog, hideDialog } from '@/views/game/util'
 import Hero from '@/views/game/core/hero'
-import { useStore } from 'vuex'
+import Equip from '@/views/game/core/equip'
+import equipCell from './components/equipCell.vue'
 
 export default {
   name: 'tavern',
@@ -67,14 +69,14 @@ export default {
       return heroList.value[currentHeroIndex.value]
     })
 
-    const chooseHero = (index) => {
+    const chooseHero = (index: number) => {
       currentHeroIndex.value = index
     }
 
-    const compareEquip = (equip) => {
+    const compareEquip = (equip: Equip) => {
       // todo 找到当前英雄该部位已穿戴的装备
       const hero: Hero = currentHero.value as Hero
-      const currentEquip = hero.findEquipByPart(equip.part)
+      const currentEquip = hero.findEquipByPart(equip.part) || null
       showCompareEquipDialog(currentEquip, equip, {
         wear () {
           hero.wearEquip(equip)

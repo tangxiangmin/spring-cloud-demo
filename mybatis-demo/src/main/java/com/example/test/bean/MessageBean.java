@@ -1,12 +1,18 @@
 package com.example.test.bean;
 
 
+import java.util.List;
+
 public class MessageBean {
 
     private long id;
     private long userId;
     private long pid;
     private String content;
+    private java.sql.Timestamp createdAt;
+    private long replyId;
+
+    private List<MessageBean> replyList;
 
 
     public long getId() {
@@ -42,6 +48,32 @@ public class MessageBean {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+
+    public java.sql.Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(java.sql.Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+
+    public long getReplyId() {
+        return replyId;
+    }
+
+    public void setReplyId(long replyId) {
+        this.replyId = replyId;
+    }
+
+    public List<MessageBean> getReplyList() {
+        return replyList;
+    }
+
+    public void setReplyList(List<MessageBean> replyList) {
+        this.replyList = replyList;
     }
 
 }

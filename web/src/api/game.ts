@@ -1,44 +1,80 @@
 import request from '@/util/request'
 import Hero from '@/views/game/core/hero'
-import Equip from '@/views/game/core/equip'
+import Equip, { VirtualEquip } from '@/views/game/core/equip'
 
-const random = (start: number, end: number) => {
-  return Math.floor(Math.random() * end + start)
-}
-
-function createEquip () {
-  const part = random(1, 8)
-  const type = random(1, 5)
-
-  return new Equip({
-    lv: 30,
-    part,
-    type,
-    name: '隔热手套',
-    attrs: {
-      hp: 50,
-      mp: 10
-    }
-  })
+// function createEquip (virtualEquip: VirtualEquip): Equip {
+//   const { part, type, lv, name } = virtualEquip
+//   return new Equip({
+//     lv,
+//     part,
+//     type,
+//     name,
+//     attrs: {
+//       hp: 50,
+//       mp: 10
+//     }
+//   })
+// }
+export function fetchAccountInfo () {
+  return request.get('/account/v1/info')
 }
 
 export function fetchHeroList () {
-  return Promise.resolve([
-    new Hero({ name: '克里斯', lv: 1, mp: 30, exp: 113, hp: 100 })
-    // { id: 1, name: '小强', hp: 5730, mp: 2131, energy: 132, exp: '1900 / 4200' },
-    // { id: 2, name: '小红' },
-    // { id: 3, name: '小明' }
-  ])
+  return request.get('/hero/v1/list').then(res => {
+    const heroList = res.data
+    return heroList.map((hero: any) => new Hero(hero))
+  })
+
+  // return Promise.resolve([
+  //   new Hero({ name: '克里斯', lv: 1, mp: 30, exp: 113, hp: 100 })
+  // ])
 }
 
 export function fetchEquipList () {
+  return request.get('/account/v1/equipList').then(res => {
+    return res.data.map((tmp: any) => {
+      return new Equip({
+        lv: tmp.lv,
+        part: tmp.part,
+        type: tmp.type,
+        name: tmp.name,
+        attrs: {
+          hp: 50,
+          mp: 10
+        }
+      })
+    })
+  })
+  // const list = []
+  // for (let i = 0; i < 18; ++i) {
+  //   list.push(createEquip(null))
+  // }
+  // return Promise.resolve(list)
+}
+
+// 商店
+export function fetchBoxList () {
   const list = []
-  for (let i = 0; i < 18; ++i) {
-    list.push(createEquip())
+  for (let i = 0; i < 3; ++i) {
+    list.push(
+      Equip.createVirtualEquip(10)
+    )
   }
   return Promise.resolve(list)
 }
 
-export function openEquipBox () {
-  return Promise.resolve(createEquip())
+export function openEquipBox (virtualEquip: VirtualEquip) {
+  return request.post('/account/v1/openEquipBox', virtualEquip).then(res => {
+    const tmp = res.data
+    return new Equip({
+      lv: tmp.lv,
+      part: tmp.part,
+      type: tmp.type,
+      name: tmp.name,
+      attrs: {
+        hp: 50,
+        mp: 10
+      }
+    })
+  })
 }

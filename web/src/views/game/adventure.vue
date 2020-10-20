@@ -45,7 +45,6 @@ export default {
         content: (h: Function) => {
           return h(heroListDialog, {
             onChoose: (hero: Hero) => {
-              console.log('choose')
               hero.on('underAttack', (attack: Attack) => {
                 console.log(`${hero.name}underAttack`, attack.damage, '剩余hp', hero.hp)
               })
@@ -59,6 +58,11 @@ export default {
 
     const startScene = (scene: Scene) => {
       scene.run()
+      scene.on('gameOver', ({ gainGold, gainExp }: any) => {
+        console.log('英雄死亡，游戏结束，获得奖励')
+        console.log({ gainGold, gainExp })
+        // todo 增加金币和当前英雄的经验
+      })
     }
 
     return {

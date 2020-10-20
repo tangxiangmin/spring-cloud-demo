@@ -4,9 +4,9 @@
       <div class="box-wrap_hd">一级宝箱</div>
       <div class="box-wrap_bd">
         <div class="box" v-for="(box, index) in boxList" :key="index" @click="openBox(box)">
-          <div class="box_tt">头部</div>
+          <div class="box_tt">{{box.typeName}} . {{box.partName}}</div>
           <div class="box_bd"></div>
-          <div class="box_ft">800</div>
+          <div class="box_ft">{{box.cost}}</div>
         </div>
       </div>
     </div>
@@ -14,18 +14,19 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import messageBox from '@/util/popup/messageBox'
 
 import openBoxDialog from '@/views/game/components/openBoxDialog'
 
-import { openEquipBox } from '@/api/game'
+import { openEquipBox, fetchBoxList } from '@/api/game'
 
 export default {
   name: 'shop',
   setup () {
-    const boxList = ref([1, 2, 3])
+    const boxList = ref([])
     const openBox = (box) => {
+      // todo 重新获取装备列表和用户金币
       openEquipBox(box).then(equip => {
         messageBox.show({
           content: (h) => {
@@ -37,6 +38,11 @@ export default {
         })
       })
     }
+    onMounted(() => {
+      fetchBoxList().then(list => {
+        boxList.value = list
+      })
+    })
     return {
       boxList,
       openBox

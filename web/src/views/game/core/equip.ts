@@ -17,6 +17,14 @@ enum EquipType {
   LEGEND
 }
 
+export interface VirtualEquip {
+  lv: number;
+  type: EquipType;
+  part: EquipPart;
+  partName: string;
+  typeName: string;
+  cost: number;
+}
 // enum EquipAttr {
 //   hp='hp', // 生命值
 //   mp = 'mp', // 法力值
@@ -45,6 +53,14 @@ const equipType: Record<string, string> = {
   4: '史诗',
   5: '传奇'
 }
+function randomEnum<T> (anEnum: T): T[keyof T] {
+  const enumValues = Object.keys(anEnum)
+    .map(n => Number.parseInt(n))
+    .filter(n => !Number.isNaN(n)) as unknown as T[keyof T][]
+  const randomIndex = Math.floor(Math.random() * enumValues.length)
+  const randomEnumValue = enumValues[randomIndex]
+  return randomEnumValue
+}
 
 class Equip {
   name: string;
@@ -64,11 +80,26 @@ class Equip {
     this.initAttr(attrs)
   }
 
+  // todo 控制每种品质装备的生成频率
+  static createVirtualEquip (lv: number): VirtualEquip {
+    const type = randomEnum(EquipType)
+    const part = randomEnum(EquipPart)
+    const cost = lv * type * 200
+    return {
+      lv,
+      cost,
+      type,
+      part,
+      typeName: equipType[type],
+      partName: equipPart[part]
+    }
+  }
+
   get partName () {
     return equipPart[this.part]
   }
 
-  get TypeName () {
+  get typeName () {
     return equipType[this.type]
   }
 

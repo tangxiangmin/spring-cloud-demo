@@ -14,7 +14,14 @@ public class MessageService {
     private MessageDao messageDao; // 自动注入Dao层实例
 
     public List<MessageBean> getList() {
-        return messageDao.getList();
+        List<MessageBean> list = messageDao.getList();
+        for(int i =0 ;i < list.size(); ++i){
+            MessageBean bean = list.get(i);
+            Long pid = bean.getId();
+            List<MessageBean> sub = messageDao.getReplyList(pid);
+            bean.setReplyList(sub);
+        }
+        return list;
     }
 
     public int insert(MessageBean messageBean) {

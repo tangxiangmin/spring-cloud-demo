@@ -36,4 +36,11 @@ public class MessageBoardController {
     public ResponseBean<Boolean> updateCard(@PathVariable String id) {
         return new ResponseBean<>(messageService.remove(id) > 0);
     }
+    @PostMapping("/{id}/reply")
+    public ResponseBean<Boolean> replyMessage(@PathVariable int id, @RequestBody MessageDto dto){
+        MessageBean bean = new MessageBean();
+        bean.setPid(id);
+        BeanUtils.copyProperties(dto, bean);
+        return new ResponseBean<>(messageService.insert(bean) > 0);
+    }
 }

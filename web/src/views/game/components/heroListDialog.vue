@@ -19,14 +19,15 @@
 <script lang="ts">
 import { useStore } from 'vuex'
 import { computed } from 'vue'
+import Hero from '@/views/game/core/hero'
 export default {
   name: 'heroListDialog',
-  setup (_, { emit }) {
+  setup (context: any, { emit }: any) {
     const store = useStore()
     const heroList = computed(() => {
       return store.state.game.heroList
     })
-    const choose = (hero) => {
+    const choose = (hero: Hero) => {
       emit('choose', hero)
     }
 

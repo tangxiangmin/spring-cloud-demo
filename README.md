@@ -48,7 +48,9 @@ mybatis:
 
 ## lombok
 
-参考[Java开发中用到的，lombok是什么？](https://www.zhihu.com/question/42348457)
+参考
+* [Spring boot 中@RequestBody 获取JSON对象无效为空的问题](http://www.yangquanyao.com/2019/08/29/spring-boot-%E4%B8%ADrequestbody-%E8%8E%B7%E5%8F%96json%E5%AF%B9%E8%B1%A1%E6%97%A0%E6%95%88%E4%B8%BA%E7%A9%BA%E7%9A%84%E9%97%AE%E9%A2%98/)
+* [Java开发中用到的，lombok是什么？](https://www.zhihu.com/question/42348457)
 
 lombok是一个工具库，通过注解的方式消除Java代码的冗长，尤其是POJO对象，一种比较方便的用处是快速格式化请求体的json参数
 
