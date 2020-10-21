@@ -74,12 +74,15 @@ export default {
     }
 
     const compareEquip = (equip: Equip) => {
-      // todo 找到当前英雄该部位已穿戴的装备
       const hero: Hero = currentHero.value as Hero
       const currentEquip = hero.findEquipByPart(equip.part) || null
       showCompareEquipDialog(currentEquip, equip, {
         wear () {
-          hero.wearEquip(equip)
+          if (currentEquip) {
+            store.dispatch('game/getOffEquip', { hero, equip: currentEquip })
+          }
+          store.dispatch('game/wearEquip', { hero, equip })
+
           hideDialog()
         }
       })

@@ -8,4 +8,6 @@ import java.util.List;
 @Component
 public interface HeroDao {
     public List<HeroBean> getUserHeroList(int uid);
+    public HeroBean getOne(int id);
+    public int updateOne(HeroBean bean);
 }

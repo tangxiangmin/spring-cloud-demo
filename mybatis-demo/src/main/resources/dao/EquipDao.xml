@@ -29,4 +29,7 @@
 
         );
     </insert>
+    <update id="updateHero">
+        UPDATE equip SET hero_id = #{heroId}, status = 1 WHERE id = #{id};
+    </update>
 </mapper>

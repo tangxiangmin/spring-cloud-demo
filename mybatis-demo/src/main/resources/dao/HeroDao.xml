@@ -4,4 +4,11 @@
     <select id="getUserHeroList" resultType="com.example.test.bean.HeroBean">
         SELECT * FROM hero WHERE uid = #{uid};
     </select>
+    <select id="getOne" resultType="com.example.test.bean.HeroBean">
+        SELECT * FROM hero WHERE id = #{id};
+    </select>
+    <update id="updateOne">
+        UPDATE hero SET exp = #{exp}, lv = #{lv} WHERE id = #{id};
+    </update>
+
 </mapper>

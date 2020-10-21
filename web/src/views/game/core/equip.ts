@@ -63,6 +63,8 @@ function randomEnum<T> (anEnum: T): T[keyof T] {
 }
 
 class Equip {
+  id: number;
+  heroId: number;
   name: string;
   lv: number;
   part: EquipPart;
@@ -70,7 +72,9 @@ class Equip {
   attrs: Map<string, any>;
 
   constructor (opts: any) {
-    const { part, name, type, lv, attrs } = opts
+    const { part, name, type, lv, attrs, id, heroId } = opts
+    this.id = id
+    this.heroId = heroId
     this.lv = lv
     this.name = name
     this.part = part

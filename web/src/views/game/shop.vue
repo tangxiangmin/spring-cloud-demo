@@ -4,33 +4,44 @@
       <div class="box-wrap_hd">一级宝箱</div>
       <div class="box-wrap_bd">
         <div class="box" v-for="(box, index) in boxList" :key="index" @click="openBox(box)">
-          <div class="box_tt">{{box.typeName}} . {{box.partName}}</div>
-          <div class="box_bd"></div>
+          <div class="box_tt">lv.{{box.lv}} {{box.partName}}</div>
+          <div class="box_bd">{{box.typeName}}</div>
           <div class="box_ft">{{box.cost}}</div>
         </div>
+      </div>
+    </div>
+    <div class="box-wrap">
+      <div class="box-wrap_hd">钻石宝箱</div>
+      <div class="text-center">
+        暂未开启
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
+import { useStore } from 'vuex'
 import messageBox from '@/util/popup/messageBox'
 
 import openBoxDialog from '@/views/game/components/openBoxDialog'
 
-import { openEquipBox, fetchBoxList } from '@/api/game'
-
 export default {
   name: 'shop',
   setup () {
-    const boxList = ref([])
+    const store = useStore()
+    const boxList = computed(() => {
+      return store.state.game.equipBoxList
+    })
+
+    const refreshBoxList = () => {
+      store.dispatch('game/fetchBoxList')
+    }
     const openBox = (box) => {
-      // todo 重新获取装备列表和用户金币
-      openEquipBox(box).then(equip => {
+      store.dispatch('game/openEquipBox', box).then((equip) => {
+        refreshBoxList()
         messageBox.show({
           content: (h) => {
-            // todo 确认一下createElement这里的改动
             return h(openBoxDialog, {
               equip
             })
@@ -38,11 +49,11 @@ export default {
         })
       })
     }
+
     onMounted(() => {
-      fetchBoxList().then(list => {
-        boxList.value = list
-      })
+      refreshBoxList()
     })
+
     return {
       boxList,
       openBox
@@ -55,7 +66,14 @@ export default {
 .page {
   padding: rem(30);
 }
+.text-center {
+  text-align: center;
+}
 .box-wrap {
+  font-size: rem(24);
+  &:not(:last-child){
+    margin-bottom: rem(50);
+  }
   &_hd {
     padding: rem(20) 0;
     font-size: rem(30);
@@ -66,7 +84,6 @@ export default {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-
   }
 }
 .box {

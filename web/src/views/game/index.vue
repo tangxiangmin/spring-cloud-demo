@@ -29,9 +29,7 @@ export default {
     ])
 
     // webStorm暂时不支持vue3中vuex的store跳转
-    store.dispatch('game/fetchAccountInfo')
-    store.dispatch('game/fetchHeroList')
-    store.dispatch('game/fetchEquipList')
+    store.dispatch('game/initGame')
 
     const accountInfo = computed(() => {
       return store.state.game.accountInfo
@@ -47,7 +45,7 @@ export default {
 
 <style scoped lang="scss">
 .page {
-  min-height: 100vh;
+  //min-height: 100vh;
 }
 .header {
   padding: rem(30);

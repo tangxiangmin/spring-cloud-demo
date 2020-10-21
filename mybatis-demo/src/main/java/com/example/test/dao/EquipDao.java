@@ -12,4 +12,6 @@ public interface EquipDao {
     public List<EquipBean> getUserUnUsedEquip(int uid);
 
     int insertOne(EquipBean equipBean);
+
+    int updateHero(int id, int heroId);
 }

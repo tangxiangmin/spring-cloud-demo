@@ -44,4 +44,8 @@ public class EquipService {
 
         return equipBean;
     }
+
+    public int setHeroEquip(int equipId, int heroId){
+        return equipDao.updateHero(equipId, heroId);
+    }
 }

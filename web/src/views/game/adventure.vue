@@ -24,6 +24,8 @@
 
 <script lang="ts">
 import { ref } from 'vue'
+import { useStore } from 'vuex'
+
 import Scene from '@/views/game/core/scene'
 import Hero from '@/views/game/core/hero'
 import Attack from '@/views/game/core/attack'
@@ -36,6 +38,7 @@ import heroListDialog from '@/views/game/components/heroListDialog.vue'
 export default {
   name: 'adventure',
   setup () {
+    const store = useStore()
     const sceneList = ref([
       new Scene(7, '碎石旷野', 'lv30 ~ lv34')
     ])
@@ -61,7 +64,13 @@ export default {
       scene.on('gameOver', ({ gainGold, gainExp }: any) => {
         console.log('英雄死亡，游戏结束，获得奖励')
         console.log({ gainGold, gainExp })
-        // todo 增加金币和当前英雄的经验
+        const params = {
+          gold: gainGold,
+          exp: gainExp,
+          heroId: scene.hero?.id
+        }
+
+        store.dispatch('game/finishScene', params)
       })
     }
 
