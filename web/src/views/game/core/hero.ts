@@ -1,28 +1,19 @@
 import CombatUnit from '@/views/game/core/combatUnit'
 import Equip, { EquipPart } from '@/views/game/core/equip'
 
-function calcLevel (lv: number): {hp: number;mp: number} {
-  return {
-    hp: lv * 500,
-    mp: lv * 100
-  }
-}
 class Hero extends CombatUnit {
   id: number;
   lv: number;
-  mp: number;
   name: string;
   exp: number;
   equipMap: Map<EquipPart, Equip>;
 
   constructor (opts: any) {
     const { lv, name, exp, id } = opts
-    const { mp, hp } = calcLevel(lv)
-    super(hp)
+    super(opts)
 
     this.id = id
     this.lv = lv
-    this.mp = mp
     this.name = name
     this.exp = exp
 

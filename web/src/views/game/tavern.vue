@@ -36,13 +36,27 @@
       <div class="hero-icon" :class="{'hero-icon-on': hero === currentHero}" @click="chooseHero(index)" v-for="(hero,index) in heroList" :key="index">{{hero.name}}</div>
     </div>
     <div class="equip-list">
-      <equipCell v-for="equip in equipList" :click="true" @click="compareEquip(equip)" class="equip" :key="equip" :equip="equip"></equipCell>
+      <equipCell :showMask="isChoosing" v-for="(item,index) in equipList" :click="true" @click="clickEquip(item.equip, index)" class="equip" :key="item.equip.id" :equip="item.equip">
+        <template v-slot:mask>
+          <input type="checkbox" v-model="item.checked">
+        </template>
+      </equipCell>
+    </div>
+    <div class="action">
+      <div class="action_l">
+        <template v-if="isChoosing"><input v-model="isChooseAll" type="checkbox">全选</template>
+      </div>
+      <div class="action_r">
+        <button @click="chooseEquip" v-if="!isChoosing">分解</button>
+        <button @click="confirmDecompose" v-else>分解</button>
+        <button>整理</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 
 import { showCompareEquipDialog, hideDialog } from '@/views/game/util'
@@ -50,19 +64,27 @@ import Hero from '@/views/game/core/hero'
 import Equip from '@/views/game/core/equip'
 import equipCell from './components/equipCell.vue'
 
+type CheckedEquip = {equip: Equip; checked: boolean}
 export default {
   name: 'tavern',
   components: { equipCell },
   setup () {
     const store = useStore()
     const currentHeroIndex = ref(0)
+    const isChoosing = ref(false)
+    const isChooseAll = ref(false)
 
     const heroList = computed(() => {
       return store.state.game.heroList
     })
 
     const equipList = computed(() => {
-      return store.state.game.equipList
+      return store.state.game.equipList.map((equip: Equip) => {
+        return {
+          equip,
+          checked: false
+        }
+      })
     })
 
     const currentHero = computed(() => {
@@ -88,6 +110,32 @@ export default {
       })
     }
 
+    // 分解装备
+    const clickEquip = (equip: Equip, index: number) => {
+      if (isChoosing.value) {
+        const cell = equipList.value[index]
+        cell.checked = !cell.checked
+      } else {
+        compareEquip(equip)
+      }
+    }
+
+    const chooseEquip = () => {
+      isChoosing.value = true
+    }
+    watch(isChooseAll, (newVal) => {
+      equipList.value.forEach((item: CheckedEquip) => {
+        item.checked = newVal
+      })
+    })
+    const confirmDecompose = () => {
+      const list = equipList.value.filter((item: CheckedEquip) => {
+        return item.checked
+      })
+      console.log(list)
+      // todo 分解选中装备，获取钻石
+    }
+
     onMounted(() => {
       // 统一放在进入页面时处理
       // store.dispatch('game/fetchHeroList')
@@ -98,8 +146,15 @@ export default {
       heroList,
       equipList,
       currentHero,
+      isChoosing,
+      isChooseAll,
+
+      // methods
       chooseHero,
-      compareEquip
+      compareEquip,
+      chooseEquip,
+      clickEquip,
+      confirmDecompose
     }
   }
 }
@@ -107,7 +162,7 @@ export default {
 
 <style scoped lang="scss">
 .panel {
-  padding: rem(30);
+  padding: rem(20) rem(30);
   display: flex;
 }
 .profile {
@@ -166,6 +221,23 @@ export default {
   .equip {
     margin-left: rem(20);
     margin-bottom: rem(20);
+  }
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: rem(20);
+  padding: 0 rem(30);
+  &_l {
+    display: flex;
+    align-items: center;
+  }
+  &_r {
+    button {
+      margin-left: rem(10);
+    }
   }
 }
 

@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, ref, h } from 'vue'
 import { fetchUserList } from '@/api/user'
 
 export default defineComponent({
@@ -18,8 +18,11 @@ export default defineComponent({
         userList.value = res
       })
     })
-    return {
-      userList
+    return () => {
+      return h('div', {
+        title: 'this is title',
+        attrs: {}
+      }, 'Hello')
     }
   }
 })

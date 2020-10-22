@@ -1,11 +1,15 @@
 <template>
   <div class="equip" :class="['equip-type-'+equip?.type]" @click="clickCell">
     <template v-if="equip">
-      <div class="equip_ct">{{ equip.typeName }} <br> {{equip.partName}}</div>
+      <div class="equip_ct">{{ equip.typeName }} <br> {{ equip.partName }}</div>
       <div class="equip_lv">
         lv.{{ equip.lv }}
       </div>
+      <div class="equip_mask" v-if="showMask">
+        <slot name="mask"></slot>
+      </div>
     </template>
+
   </div>
 </template>
 
@@ -20,6 +24,10 @@ export default {
       default: null
     },
     click: {
+      type: Boolean,
+      default: false
+    },
+    showMask: {
       type: Boolean,
       default: false
     }
@@ -69,6 +77,20 @@ export default {
       background-color: $color;
       color: #fff;
     }
+  }
+
+  &_mask {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+
   }
 
 }

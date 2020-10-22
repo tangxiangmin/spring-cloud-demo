@@ -6,7 +6,8 @@ class Monster extends CombatUnit {
   name: string;
 
   constructor () {
-    super(100)
+    const lv = 1
+    super({ lv })
     this.lv = 1
     this.name = '史莱姆'
   }
