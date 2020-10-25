@@ -80,8 +80,7 @@ class Scene extends Emitter {
       setTimeout(() => {
         const a = side ? hero : monster
         const b = side ? monster : hero
-        const attack = a.fight()
-        b.underAttack(attack)
+        a.fight()
         side = !side
         if (a.isAlive && b.isAlive) {
           loop()

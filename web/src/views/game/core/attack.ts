@@ -1,8 +1,8 @@
 
 class Attack {
   damage: number;
-  constructor () {
-    this.damage = Math.floor(Math.random() * 10 + 5)
+  constructor (damage: number) {
+    this.damage = damage
   }
 }
 

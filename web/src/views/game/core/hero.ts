@@ -18,6 +18,7 @@ class Hero extends CombatUnit {
     this.exp = exp
 
     this.equipMap = new Map()
+    this.initListener()
   }
 
   get hat () {
@@ -50,6 +51,13 @@ class Hero extends CombatUnit {
 
   get shoes () {
     return this.findEquipByPart(EquipPart.shoes)
+  }
+
+  initListener () {
+    this.on('critical', () => {
+      // 检测是否有处理暴击的技能
+      console.log(this.name + '产生暴击')
+    })
   }
 
   // 计算所有装备的数据加持

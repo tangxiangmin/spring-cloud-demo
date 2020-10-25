@@ -14,6 +14,9 @@ class CombatUnit extends Emitter {
   mp: number;
   skillList: Array<Skill>;
   target?: CombatUnit;
+  critical: number;
+  damage: number;
+  defense: number;
 
   constructor (opts: any) {
     super()
@@ -23,17 +26,14 @@ class CombatUnit extends Emitter {
     this.totalHp = hp
     this.hp = hp
     this.mp = mp
-    this.skillList = []
-  }
+    this.critical = 0.5
+    this.damage = 60
+    this.defense = 20
 
-  // 攻击
-  get damage () {
-    return 66
-  }
-
-  // 防御
-  get defense (): number {
-    return 30
+    this.skillList = [
+      new Skill(0),
+      new Skill(100)
+    ]
   }
 
   get isAlive () {
@@ -45,11 +45,17 @@ class CombatUnit extends Emitter {
     this.target = target
   }
 
+  useSkill () {
+    const idx = Math.floor(Math.random() * this.skillList.length)
+    const skill = this.skillList[idx]
+    if (this.target) {
+      skill.runAction(this, this.target)
+    }
+  }
+
   // 战斗，返回一个Attack对象
-  fight (): Attack {
-    const attack = new Attack()
-    // todo 设置attack伤害值等
-    return attack
+  fight () {
+    this.useSkill()
   }
 
   underAttack (attack: Attack) {
