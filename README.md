@@ -5,6 +5,7 @@ SpringCloud学习
 
 相关整理
 * [SpringCloud之项目搭建与服务注册](https://www.shymean.com/article/SpringCloud之项目搭建与服务注册)
+* [SpringBoot + Spring Security 基本使用及个性化登录配置](https://blog.csdn.net/u013435893/article/details/79596628)
 
 ## 逻辑分层
 * Bean，JavaBean可以理解为某段JSON的Java类，主要包括字段定义、
@@ -90,3 +91,72 @@ public class MessageBoardController {
 }
 
 ```
+
+## Spring Security
+
+首先添加依赖
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+```
+然后重启项目，访问一个url，默认情况下会跳转到 http://localhost:8080/login 页面，然后使用账号密码登录
+* 账号，默认`user`
+* 密码，在项目启动时的控制面板中可以找到`Using generated security password: xxxx`
+
+登录成功之后就可以正常访问原本的url了，打开浏览器Application面板可以看见多了一个名字为`JSESSIONID`的cookie，删掉该值后需要重新登录
+
+业务中一般需要接入自己的账号系统，需要继承`WebSecurityConfigurerAdapter`和`UserDetailsService`
+```java
+@Configuration
+public class BrowerSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.formLogin()                    //  定义当需要用户登录时候，转到的登录页面。
+                .and()
+                .authorizeRequests()        // 定义哪些URL需要被保护、哪些不需要被保护
+                .anyRequest()               // 任何请求,登录后可以访问
+                .authenticated();
+    }
+}
+```
+
+```java
+@Component
+public class MyUserDetailsService implements UserDetailsService {
+    private Logger logger = LoggerFactory.getLogger(getClass());
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // TODO 根据用户名，查找到对应的密码，与权限
+
+        System.out.println("loadUserByUsername");
+        // 封装用户信息，并返回。参数分别是：用户名，密码，用户权限
+        String password = passwordEncoder.encode("123456");
+        User user = new User(username, password,
+                AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
+        return user;
+    }
+}
+```
+然后访问页面重新输入账号`admin`和密码`123456`就可以重新登录了。
+
+上面是通过表单提交进行登录然后页面跳转的，在前后端分离的场景下，可能需要提供向前端提供AJAX接口，这种需求场景下，只需要在`BrowerSecurityConfig`
+配置中添加自定义的`SimpleUrlAuthenticationSuccessHandler`和`AuthenticationFailureHandler`
+```java
+http.formLogin()                    //  定义当需要用户登录时候，转到的登录页面。
+    .successHandler(authenticationSucessHandler) // 处理登录成功
+    .failureHandler(authenticationFailureHandler) // 处理登录失败
+    .and()
+    .authorizeRequests()        // 定义哪些URL需要被保护、哪些不需要被保护
+    .anyRequest()               // 任何请求,登录后可以访问
+    .authenticated();
+```
+然后在对应的handler中处理鉴权和响应
